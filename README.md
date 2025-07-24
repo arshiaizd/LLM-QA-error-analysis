@@ -1,6 +1,6 @@
 # LLM‑QA Error Analysis
 
-A minimal extractive question‑answering pipeline using HuggingFace Transformers, with detailed error analysis for two models (ParsBERT and RoBERTa).
+A minimal extractive question‑answering pipeline using HuggingFace Transformers, with fine-tuning and detailed error analysis for two models (ParsBERT and RoBERTa).
 
 ## Files in This Repository
 
