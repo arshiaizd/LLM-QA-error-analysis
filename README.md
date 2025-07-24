@@ -1,32 +1,96 @@
-## Fine-Tuning and Results
+# LLM‑QA Error Analysis
 
-### Fine-Tuning Approach
+A minimal extractive question‑answering pipeline using HuggingFace Transformers, with detailed error analysis for two models (ParsBERT and RoBERTa).
 
-In this project, transformer-based models (such as ParsBERT and RoBERTa) were fine-tuned for the extractive question answering task using a custom dataset. The fine-tuning process involved:
+## Files in This Repository
 
-- Formatting the data into question/context/answer triplets.
-- Using HuggingFace's `Trainer` and `transformers` library to train the models on the QA dataset.
-- Evaluating model performance on a held-out validation set.
+- **LLM‑QA.ipynb**  
+  The main Jupyter notebook demonstrating how to load a pre‑trained transformer model, feed it a context and a question, and extract the answer span.
 
-Hyperparameters (such as learning rate, batch size, and number of epochs) were optimized for best validation performance. Training was performed using GPU acceleration for faster convergence.
+- **parsbert_errors.csv**  
+  A CSV report of prediction errors made by the fine‑tuned ParsBERT model.
 
-### Results
+- **roberta_errors.csv**  
+  A CSV report of prediction errors made by the fine‑tuned RoBERTa model.
 
-Below is a summary of the performance of both models on the validation set. Results include standard metrics such as **Exact Match (EM)** and **F1-score**.
+## Setup & Installation
 
-<div align="center">
+1. **Clone the repo**  
+   ```bash
+   git clone https://github.com/your-username/llm-qa-error-analysis.git
+   cd llm-qa-error-analysis
+   ```
 
-<!-- Upload your result image (e.g., metrics.png, results_chart.png) and update the filename below -->
-<img src="results.png" alt="Fine-tuning Results" width="600"/>
+2. **Install dependencies**  
+   ```bash
+   pip install torch transformers pandas notebook
+   ```
 
-</div>
-
-**Key observations:**
-- **ParsBERT** performed better on Persian contexts, achieving higher EM and F1 on Persian QA samples.
-- **RoBERTa** demonstrated robust performance across diverse contexts but showed slightly lower scores on language-specific samples.
-- The error analysis CSVs provide detailed breakdowns of each model’s failure cases.
+3. **Launch Jupyter**  
+   ```bash
+   jupyter notebook LLM‑QA.ipynb
+   ```
 
 ---
 
-*For a detailed breakdown, see the error analysis files: `parsbert_errors.csv` and `roberta_errors.csv`.*
+## Notebook Walkthrough
+
+Below is a high‑level, step‑by‑step guide to the contents of **LLM‑QA.ipynb**:
+
+1. **Imports & Environment Setup**  
+   - Load Python packages: `torch`, `transformers`, and utilities like `pandas` (if needed for later analysis).  
+   - Detect GPU availability and set device (`cpu`/`cuda`).
+
+2. **Model and Tokenizer Loading**  
+   - Specify the HuggingFace model checkpoint (e.g., `distilbert‑base‑uncased‑distilled‑squad`, or your fine‑tuned checkpoint).  
+   - Instantiate the corresponding tokenizer and QA model.
+
+3. **Preparing Context and Question**  
+   - Define a **context** string (the passage containing the answer).  
+   - Define a **question** string (what you want the model to answer).
+
+4. **Tokenization & Input Encoding**  
+   - Concatenate question and context with appropriate special tokens (`[CLS]`, `[SEP]`).  
+   - Tokenize into `input_ids`, `attention_mask`, and `token_type_ids`.
+
+5. **Running Inference**  
+   - Pass encoded inputs into the model to obtain `start_scores` and `end_scores`.  
+   - Identify the most probable start and end token positions.
+
+6. **Extracting and Displaying the Answer**  
+   - Convert token positions back to string tokens.  
+   - Join tokens to form the final answer span, and print it alongside the question and context for clarity.
+
+7. **(Optional) Batch or Loop Over Multiple Questions**  
+   - Demonstrates how to loop over a list of questions against the same context.  
+   - Collect answers in a list or DataFrame for further analysis.
+
+---
+
+## Other Files & Error Analysis
+
+After running the notebook and fine‑tuning your models, you can inspect the two CSV files:
+
+- **parsbert_errors.csv**  
+- **roberta_errors.csv**  
+
+Each file contains one row per question, including fields such as:
+- **question** — the input question text  
+- **context** — the passage used  
+- **true_answer** — the ground‑truth answer span  
+- **predicted_answer** — what the model returned  
+- **is_correct** — Boolean flag (exact match)  
+- **start_pos, end_pos** — token indices of the predicted span  
+- **confidence** — optional model confidence score  
+
+Use these files to:
+1. **Quantify overall accuracy** (Exact Match, F1).  
+2. **Identify common failure modes** (e.g., off‑by‑one spans, missing entities).  
+3. **Compare ParsBERT vs. RoBERTa** on different question types or domains.
+
+Feel free to load them into a DataFrame (e.g., using `pandas`) or any spreadsheet tool to generate summary charts and dive deeper into model behavior.
+
+---
+
+Happy experimenting! Pull requests and issues are welcome.
 
