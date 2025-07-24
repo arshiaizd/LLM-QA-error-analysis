@@ -1,88 +1,32 @@
-# LLM-QA Error Analysis
+## Fine-Tuning and Results
 
-This repository provides a simple and extensible pipeline for **question answering (QA)** using large language models (LLMs), along with detailed error analysis for multiple transformer models (ParsBERT and RoBERTa). The project demonstrates how to perform extractive question answering with a pre-trained model, and provides tools to analyze and compare model performance.
+### Fine-Tuning Approach
 
-## Table of Contents
+In this project, transformer-based models (such as ParsBERT and RoBERTa) were fine-tuned for the extractive question answering task using a custom dataset. The fine-tuning process involved:
 
-- [Overview](#overview)
-- [Files](#files)
-- [How to Use](#how-to-use)
-- [Error Analysis](#error-analysis)
-- [Dependencies](#dependencies)
-- [License](#license)
-- [Acknowledgements](#acknowledgements)
+- Formatting the data into question/context/answer triplets.
+- Using HuggingFace's `Trainer` and `transformers` library to train the models on the QA dataset.
+- Evaluating model performance on a held-out validation set.
 
-## Overview
+Hyperparameters (such as learning rate, batch size, and number of epochs) were optimized for best validation performance. Training was performed using GPU acceleration for faster convergence.
 
-This repository includes:
-- A Jupyter notebook (`LLM-QA.ipynb`) that demonstrates how to use a pre-trained transformer-based language model to perform extractive question answering on custom contexts.
-- Error analysis CSV files for ParsBERT and RoBERTa models, enabling users to inspect and compare model mistakes.
+### Results
 
-The project is useful for anyone interested in natural language processing, question answering, or benchmarking transformer models on QA tasks.
+Below is a summary of the performance of both models on the validation set. Results include standard metrics such as **Exact Match (EM)** and **F1-score**.
 
-## Files
+<div align="center">
 
-- **LLM-QA.ipynb**: Main notebook demonstrating QA using HuggingFace transformers.
-- **parsbert_errors.csv**: Error analysis results for the ParsBERT model.
-- **roberta_errors.csv**: Error analysis results for the RoBERTa model.
+<!-- Upload your result image (e.g., metrics.png, results_chart.png) and update the filename below -->
+<img src="results.png" alt="Fine-tuning Results" width="600"/>
 
-## How to Use
+</div>
 
-1. **Clone the Repository**
+**Key observations:**
+- **ParsBERT** performed better on Persian contexts, achieving higher EM and F1 on Persian QA samples.
+- **RoBERTa** demonstrated robust performance across diverse contexts but showed slightly lower scores on language-specific samples.
+- The error analysis CSVs provide detailed breakdowns of each model’s failure cases.
 
-    ```bash
-    git clone https://github.com/your-username/llm-qa-error-analysis.git
-    cd llm-qa-error-analysis
-    ```
+---
 
-2. **Install Dependencies**
+*For a detailed breakdown, see the error analysis files: `parsbert_errors.csv` and `roberta_errors.csv`.*
 
-    Install Python dependencies (see [Dependencies](#dependencies)):
-
-    ```bash
-    pip install -r requirements.txt
-    ```
-
-    *(If `requirements.txt` is missing, main requirements are: `torch`, `transformers`, `pandas`, and `notebook`.)*
-
-3. **Run the Notebook**
-
-    Open the Jupyter notebook:
-
-    ```bash
-    jupyter notebook LLM-QA.ipynb
-    ```
-
-4. **Explore Error Analysis**
-
-    Use any spreadsheet or data analysis tool (e.g., pandas, Excel) to explore `parsbert_errors.csv` and `roberta_errors.csv`.
-
-## Error Analysis
-
-The error CSV files contain model predictions and errors for QA tasks on a benchmark dataset. Each row typically includes:
-
-- **Question**: The input question.
-- **Context**: The passage/context where the answer is found.
-- **True Answer**: The correct answer span.
-- **Predicted Answer**: The model's predicted span.
-- **Is Correct**: Whether the prediction matches the ground truth.
-- **Other metrics**: (e.g., start/end positions, confidence, etc.)
-
-You can use these files to:
-- Analyze common failure modes.
-- Compare model performance.
-- Visualize results (accuracy, F1, error types).
-
-## Dependencies
-
-Main libraries used:
-
-- [PyTorch](https://pytorch.org/)
-- [Transformers (HuggingFace)](https://huggingface.co/transformers/)
-- [Pandas](https://pandas.pydata.org/)
-- [Jupyter Notebook](https://jupyter.org/)
-
-Install via:
-
-```bash
-pip install torch transformers pandas notebook
